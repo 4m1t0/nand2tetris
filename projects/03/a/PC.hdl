@@ -8,7 +8,7 @@
  * if      (reset[t] == 1) out[t+1] = 0
  * else if (load[t] == 1)  out[t+1] = in[t]
  * else if (inc[t] == 1)   out[t+1] = out[t] + 1  (integer addition)
- * else                    out[t+1] = out[t]
+  else                    out[t+1] = out[t]
  */
 
 CHIP PC {
@@ -16,5 +16,14 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    Inc16(in=regOut, out=incremented);
+
+    Mux16(a=regOut, b=incremented, sel=inc, out=tmp1);
+    Mux16(a=tmp1, b=in, sel=load, out=tmp2);
+    Mux16(a=tmp2, b=false, sel=reset, out=regIn);
+
+    Or(a=reset, b=inc, out=resetOrInc);
+    Or(a=load, b=resetOrInc, out=regLoad);
+
+    Register(in=regIn, load=regLoad, out=regOut, out=out);
 }
