@@ -16,6 +16,7 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
+    Register(in=regIn, load=regLoad, out=regOut, out=out);
     Inc16(in=regOut, out=incremented);
 
     Mux16(a=regOut, b=incremented, sel=inc, out=tmp1);
@@ -24,6 +25,4 @@ CHIP PC {
 
     Or(a=reset, b=inc, out=resetOrInc);
     Or(a=load, b=resetOrInc, out=regLoad);
-
-    Register(in=regIn, load=regLoad, out=regOut, out=out);
 }
