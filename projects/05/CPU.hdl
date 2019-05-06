@@ -39,5 +39,42 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    Mux16(a=instruction, b=aluOut, sel=instruction[15], out=aIn);
+
+    Not(in=instruction[15], out=aCmd);
+    Or(a=aCmd, b=instruction[5], out=aLoad);                 // instruction[5] = d1
+    ARegister(in=aIn, load=aLoad, out=a, out[0..14]=addressM);
+
+    And(a=instruction[15], b=instruction[4], out=dLoad);    // instruction[4] = d2
+    DRegister(in=aluOut, load=dLoad, out=d);
+
+    Mux16(a=a, b=inM, sel=instruction[12], out=am);
+
+    ALU(
+        x=d, y=am,
+
+        zx=instruction[11],     // instruction[11] = c1
+        nx=instruction[10],     // instruction[10] = c2
+        zy=instruction[9],      // instruction[9] = c3
+        ny=instruction[8],      // instruction[8] = c4
+        f=instruction[7],       // instruction[7] = c5
+        no=instruction[6],       // instruction[6] = c6
+
+        out=aluOut, out=outM, zr=zr, ng=ng
+    );
+
+    And(a=instruction[3], b=instruction[15], out=writeM);
+
+    And(a=instruction[2], b=ng, out=j1);
+    And(a=instruction[1], b=zr, out=j2);
+    Or(a=ng, b=zr, out=nps);
+    Not(in=nps, out=ps);
+    And(a=instruction[0], b=ps, out=j3);
+
+    Or(a=j1, b=j2, out=j1j2);
+    Or(a=j1j2, b=j3, out=j1j2j3);
+    And(a=instruction[15], b=j1j2j3, out=pcLoad);   // case: C command and at least a j bit is 1
+    Not(in=pcLoad, out=pcInc);                      // case: C command and every j bit is 0 or A command
+
+    PC(in=a, inc=pcInc, load=pcLoad, reset=reset, out[0..14]=pc);
 }
