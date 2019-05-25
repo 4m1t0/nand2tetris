@@ -14,7 +14,7 @@ class Parser:
         _command = self._format(command)
         if _command.startswith(self._a_command_signature):
             return Parser.A_COMMAND
-        if not _command.startswith('//') \
+        if not _command.startswith(self._comment_signature) \
                 and (self._c_command_signature_semicologne in _command
                      or self._c_command_signature_equal in _command):
             return Parser.C_COMMAND
