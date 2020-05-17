@@ -14,6 +14,8 @@ class VMTranslator:
         for input_file in input_files:
             self._translate(input_file, writer)
 
+        writer.close()
+
     def _translate(self, input_file, writer):
         parser = Parser.Parser(input_file)
         writer.setFileName(input_file)
