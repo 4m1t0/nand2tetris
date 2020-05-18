@@ -1,5 +1,5 @@
 from collections import deque
-from enums import Command
+from enums import Enums
 import sys
 
 
@@ -13,8 +13,11 @@ class Parser:
         """
         _input_file = open(input_file, 'r')
         self.lines = deque(
-            [line.rstrip('\n') for line in _input_file.readlines()
-                if line.rstrip('\n') and not line.startswith('//')])
+            [line.rstrip() if line.find('//') == -1
+                else line[:line.find('//')].rstrip()
+             for line in _input_file.readlines()
+             if (not line.startswith('//') and line.rstrip()) or
+             (line.find('//') != -1 and line[:line.find('//')].rstrip())])
         _input_file.close()
 
         self.current_command = ('', '', '')
@@ -52,23 +55,23 @@ class Parser:
         """
         if self.current_command[0] in \
                 ['add', 'sub', 'neg', 'eq', 'gt', 'lt', 'and', 'or', 'not']:
-            return Command.Command.C_ARITHMETIC
+            return Enums.Command.C_ARITHMETIC
         if self.current_command[0] == 'push':
-            return Command.Command.C_PUSH
+            return Enums.Command.C_PUSH
         if self.current_command[0] == 'pop':
-            return Command.Command.C_POP
-        if self.current_command == 'label':
-            return Command.Command.C_LABEL
+            return Enums.Command.C_POP
+        if self.current_command[0] == 'label':
+            return Enums.Command.C_LABEL
         if self.current_command[0] == 'goto':
-            return Command.Command.C_GOTO
+            return Enums.Command.C_GOTO
         if self.current_command[0] == 'if-goto':
-            return Command.Command.C_IF
+            return Enums.Command.C_IF
         if self.current_command[0] == 'function':
-            return Command.Command.C_FUNCTION
+            return Enums.Command.C_FUNCTION
         if self.current_command[0] == 'return':
-            return Command.Command.C_RETURN
+            return Enums.Command.C_RETURN
         if self.current_command[0] == 'call':
-            return Command.Command.C_CALL
+            return Enums.Command.C_CALL
 
         print("Invalid .vm format at Parser.commandType()")
         sys.exit(1)
@@ -80,7 +83,7 @@ class Parser:
             string: コマンドの第1引数
         """
         return self.current_command[0] \
-            if self.commandType() == Command.Command.C_ARITHMETIC \
+            if self.commandType() == Enums.Command.C_ARITHMETIC \
             else self.current_command[1]
 
     def arg2(self):

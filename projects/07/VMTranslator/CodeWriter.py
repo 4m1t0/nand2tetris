@@ -1,4 +1,4 @@
-from enums import Arithmetic, Command, MemorySegment
+from enums import Enums
 import sys
 
 
@@ -29,21 +29,21 @@ class CodeWriter:
             command (string): 算術コマンド
         """
         _command = command.upper()
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.ADD:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.ADD:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
             self.output.write('D=M\n')
             self.output.write('A=A-1\n')
             self.output.write('M=D+M\n')
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.SUB:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.SUB:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
             self.output.write('D=M\n')
             self.output.write('A=A-1\n')
             self.output.write('M=M-D\n')
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.EQ:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.EQ:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
@@ -66,7 +66,7 @@ class CodeWriter:
             self.output.write('(EQEND%s)\n' % str(self.label_ctr[0]))
 
             self.label_ctr[0] += 1
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.GT:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.GT:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
@@ -89,7 +89,7 @@ class CodeWriter:
             self.output.write('(GTEND%s)\n' % str(self.label_ctr[1]))
 
             self.label_ctr[1] += 1
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.LT:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.LT:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
@@ -98,7 +98,7 @@ class CodeWriter:
             self.output.write('D=M-D\n')
             # jump to EQTRUE# if result is equal(zero)
             self.output.write('@LTTRUE%s\n' % str(self.label_ctr[2]))
-            self.output.write('D;JGT\n')
+            self.output.write('D;JLT\n')
             # result is not equal
             self.output.write('@SP\n')
             self.output.write('A=M-1\n')
@@ -112,28 +112,28 @@ class CodeWriter:
             self.output.write('(LTEND%s)\n' % str(self.label_ctr[2]))
 
             self.label_ctr[2] += 1
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.AND:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.AND:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
             self.output.write('D=M\n')
             self.output.write('A=A-1\n')
             self.output.write('M=D&M\n')
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.OR:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.OR:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
             self.output.write('D=M\n')
             self.output.write('A=A-1\n')
             self.output.write('M=D|M\n')
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.NEG:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.NEG:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
             self.output.write('M=-M\n')
             self.output.write('@SP\n')
             self.output.write('M=M+1\n')
-        if Arithmetic.Arithmetic[_command] is Arithmetic.Arithmetic.NOT:
+        if Enums.Arithmetic[_command] is Enums.Arithmetic.NOT:
             self.output.write('@SP\n')
             self.output.write('M=M-1\n')
             self.output.write('A=M\n')
@@ -150,44 +150,44 @@ class CodeWriter:
             index (int): ?
         """
         _segment = segment.upper()
-        if command == Command.Command.C_PUSH:
-            if MemorySegment.MemorySegment[_segment] is \
-                    MemorySegment.MemorySegment.CONSTANT:
+        if command == Enums.Command.C_PUSH:
+            if Enums.MemorySegment[_segment] is \
+                    Enums.MemorySegment.CONSTANT:
                 self.output.write('@%s\n' % index)
                 self.output.write('D=A\n')
                 self.output.write('@SP\n')
                 self.output.write('A=M\n')
                 self.output.write('M=D\n')
-            elif MemorySegment.MemorySegment[_segment] in [
-                MemorySegment.MemorySegment.ARGUMENT,
-                MemorySegment.MemorySegment.LOCAL,
-                MemorySegment.MemorySegment.THIS,
-                MemorySegment.MemorySegment.THAT,
-                MemorySegment.MemorySegment.POINTER,
-                MemorySegment.MemorySegment.TEMP
+            elif Enums.MemorySegment[_segment] in [
+                Enums.MemorySegment.ARGUMENT,
+                Enums.MemorySegment.LOCAL,
+                Enums.MemorySegment.THIS,
+                Enums.MemorySegment.THAT,
+                Enums.MemorySegment.POINTER,
+                Enums.MemorySegment.TEMP
             ]:
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.ARGUMENT:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.ARGUMENT:
                     self.output.write('@ARG\n')
                     self.output.write('D=M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.LOCAL:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.LOCAL:
                     self.output.write('@LCL\n')
                     self.output.write('D=M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.THIS:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.THIS:
                     self.output.write('@THIS\n')
                     self.output.write('A=D+M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.THAT:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.THAT:
                     self.output.write('@THAT\n')
                     self.output.write('D=M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.POINTER:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.POINTER:
                     self.output.write('@R3\n')
-                    self.file.write('D=A\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.TEMP:
+                    self.output.write('D=A\n')
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.TEMP:
                     self.output.write('@R5\n')
                     self.output.write('D=A\n')
 
@@ -197,8 +197,8 @@ class CodeWriter:
                 self.output.write('@SP\n')
                 self.output.write('A=M\n')
                 self.output.write('M=D\n')
-            elif MemorySegment.MemorySegment[_segment] is \
-                    MemorySegment.MemorySegment.STATIC:
+            elif Enums.MemorySegment[_segment] is \
+                    Enums.MemorySegment.STATIC:
                 self.output.write('@%s.%s\n' % (self.static_var, index))
                 self.output.write('D=M\n')
                 self.output.write('@SP\n')
@@ -210,41 +210,41 @@ class CodeWriter:
 
             self.output.write('@SP\n')
             self.output.write('M=M+1\n')
-        if command == Command.Command.C_POP:
-            if MemorySegment.MemorySegment[_segment] is \
-                    MemorySegment.MemorySegment.CONSTANT:
+        if command == Enums.Command.C_POP:
+            if Enums.MemorySegment[_segment] is \
+                    Enums.MemorySegment.CONSTANT:
                 self.output.write('@SP\n')
                 self.output.write('M=M-1\n')
-            elif MemorySegment.MemorySegment[_segment] in [
-                MemorySegment.MemorySegment.ARGUMENT,
-                MemorySegment.MemorySegment.LOCAL,
-                MemorySegment.MemorySegment.THIS,
-                MemorySegment.MemorySegment.THAT,
-                MemorySegment.MemorySegment.POINTER,
-                MemorySegment.MemorySegment.TEMP
+            elif Enums.MemorySegment[_segment] in [
+                Enums.MemorySegment.ARGUMENT,
+                Enums.MemorySegment.LOCAL,
+                Enums.MemorySegment.THIS,
+                Enums.MemorySegment.THAT,
+                Enums.MemorySegment.POINTER,
+                Enums.MemorySegment.TEMP
             ]:
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.ARGUMENT:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.ARGUMENT:
                     self.output.write('@ARG\n')
                     self.output.write('D=M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.LOCAL:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.LOCAL:
                     self.output.write('@LCL\n')
                     self.output.write('D=M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.THIS:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.THIS:
                     self.output.write('@THIS\n')
                     self.output.write('D=M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.THAT:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.THAT:
                     self.output.write('@THAT\n')
                     self.output.write('D=M\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.POINTER:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.POINTER:
                     self.output.write('@R3\n')
                     self.file.write('D=A\n')
-                if MemorySegment.MemorySegment[_segment] is \
-                        MemorySegment.MemorySegment.TEMP:
+                if Enums.MemorySegment[_segment] is \
+                        Enums.MemorySegment.TEMP:
                     self.output.write('@R5\n')
                     self.output.write('D=A\n')
 
@@ -259,8 +259,8 @@ class CodeWriter:
                 self.output.write('@R13\n')
                 self.output.write('A=M\n')
                 self.output.write('M=D\n')
-            elif MemorySegment.MemorySegment[_segment] is \
-                    MemorySegment.MemorySegment.STATIC:
+            elif Enums.MemorySegment[_segment] is \
+                    Enums.MemorySegment.STATIC:
                 self.output.write('@SP\n')
                 self.output.write('M=M-1\n')
                 self.output.write('A=M\n')

@@ -6,6 +6,7 @@ import sys
 
 
 class VMTranslator:
+
     def __init__(self):
         super().__init__()
 
@@ -26,11 +27,9 @@ class VMTranslator:
             command = parser.commandType()
             if command == Command.Command.C_ARITHMETIC:
                 writer.writeArithmetic(parser.arg1())
-            elif command != Command.Command.C_RETURN:
-                if command == Command.Command.C_PUSH \
-                        or command == Command.Command.C_POP \
-                        or command == Command.Command.C_FUNCTION:
-                    writer.writePushPop(command, parser.arg1(), parser.arg2())
+            if command == Command.Command.C_PUSH \
+                    or command == Command.Command.C_POP:
+                writer.writePushPop(command, parser.arg1(), parser.arg2())
 
 
 def _getInputFiles(input):
