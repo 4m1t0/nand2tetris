@@ -30,116 +30,134 @@ class CodeWriter:
         """
         _command = command.upper()
         if Enums.Arithmetic[_command] is Enums.Arithmetic.ADD:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('D=M\n')
-            self.output.write('A=A-1\n')
-            self.output.write('M=D+M\n')
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                'A=A-1',
+                'M=D+M'
+            ])
         if Enums.Arithmetic[_command] is Enums.Arithmetic.SUB:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('D=M\n')
-            self.output.write('A=A-1\n')
-            self.output.write('M=M-D\n')
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                'A=A-1',
+                'M=M-D'
+            ])
         if Enums.Arithmetic[_command] is Enums.Arithmetic.EQ:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('D=M\n')
-            self.output.write('A=A-1\n')
-            self.output.write('D=M-D\n')
-            # jump to EQTRUE# if result is equal(zero)
-            self.output.write('@EQTRUE%s\n' % str(self.label_ctr[0]))
-            self.output.write('D;JEQ\n')
-            # result is not equal
-            self.output.write('@SP\n')
-            self.output.write('A=M-1\n')
-            self.output.write('M=0\n')
-            self.output.write('@EQEND%s\n' % str(self.label_ctr[0]))
-            self.output.write('0;JMP\n')
-            self.output.write('(EQTRUE%s)\n' % str(self.label_ctr[0]))
-            self.output.write('@SP\n')
-            self.output.write('A=M-1\n')
-            self.output.write('M=-1\n')
-            self.output.write('(EQEND%s)\n' % str(self.label_ctr[0]))
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                'A=A-1',
+                'D=M-D',
+                # jump to EQTRUE# if result is equal(zero)
+                '@EQTRUE%s' % str(self.label_ctr[0]),
+                'D;JEQ',
+                # result is not equal
+                '@SP',
+                'A=M-1',
+                'M=0',
+                '@EQEND%s' % str(self.label_ctr[0]),
+                '0;JMP',
+                '(EQTRUE%s)' % str(self.label_ctr[0]),
+                '@SP',
+                'A=M-1',
+                'M=-1',
+                '(EQEND%s)' % str(self.label_ctr[0])
+            ])
 
             self.label_ctr[0] += 1
         if Enums.Arithmetic[_command] is Enums.Arithmetic.GT:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('D=M\n')
-            self.output.write('A=A-1\n')
-            self.output.write('D=M-D\n')
-            # jump to EQTRUE# if result is equal(zero)
-            self.output.write('@GTTRUE%s\n' % str(self.label_ctr[1]))
-            self.output.write('D;JGT\n')
-            # result is not equal
-            self.output.write('@SP\n')
-            self.output.write('A=M-1\n')
-            self.output.write('M=0\n')
-            self.output.write('@GTEND%s\n' % str(self.label_ctr[1]))
-            self.output.write('0;JMP\n')
-            self.output.write('(GTTRUE%s)\n' % str(self.label_ctr[1]))
-            self.output.write('@SP\n')
-            self.output.write('A=M-1\n')
-            self.output.write('M=-1\n')
-            self.output.write('(GTEND%s)\n' % str(self.label_ctr[1]))
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                'A=A-1',
+                'D=M-D',
+                # jump to EQTRUE# if result is equal(zero)
+                '@GTTRUE%s' % str(self.label_ctr[1]),
+                'D;JGT',
+                # result is not equal
+                '@SP',
+                'A=M-1',
+                'M=0',
+                '@GTEND%s' % str(self.label_ctr[1]),
+                '0;JMP',
+                '(GTTRUE%s)' % str(self.label_ctr[1]),
+                '@SP',
+                'A=M-1',
+                'M=-1',
+                '(GTEND%s)' % str(self.label_ctr[1])
+            ])
 
             self.label_ctr[1] += 1
         if Enums.Arithmetic[_command] is Enums.Arithmetic.LT:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('D=M\n')
-            self.output.write('A=A-1\n')
-            self.output.write('D=M-D\n')
-            # jump to EQTRUE# if result is equal(zero)
-            self.output.write('@LTTRUE%s\n' % str(self.label_ctr[2]))
-            self.output.write('D;JLT\n')
-            # result is not equal
-            self.output.write('@SP\n')
-            self.output.write('A=M-1\n')
-            self.output.write('M=0\n')
-            self.output.write('@LTEND%s\n' % str(self.label_ctr[2]))
-            self.output.write('0;JMP\n')
-            self.output.write('(LTTRUE%s)\n' % str(self.label_ctr[2]))
-            self.output.write('@SP\n')
-            self.output.write('A=M-1\n')
-            self.output.write('M=-1\n')
-            self.output.write('(LTEND%s)\n' % str(self.label_ctr[2]))
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                'A=A-1',
+                'D=M-D',
+                # jump to EQTRUE# if result is equal(zero)
+                '@LTTRUE%s' % str(self.label_ctr[2]),
+                'D;JLT',
+                # result is not equal
+                '@SP',
+                'A=M-1',
+                'M=0',
+                '@LTEND%s' % str(self.label_ctr[2]),
+                '0;JMP',
+                '(LTTRUE%s)' % str(self.label_ctr[2]),
+                '@SP',
+                'A=M-1',
+                'M=-1',
+                '(LTEND%s)' % str(self.label_ctr[2])
+            ])
 
             self.label_ctr[2] += 1
         if Enums.Arithmetic[_command] is Enums.Arithmetic.AND:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('D=M\n')
-            self.output.write('A=A-1\n')
-            self.output.write('M=D&M\n')
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                'A=A-1',
+                'M=D&M'
+            ])
         if Enums.Arithmetic[_command] is Enums.Arithmetic.OR:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('D=M\n')
-            self.output.write('A=A-1\n')
-            self.output.write('M=D|M\n')
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                'A=A-1',
+                'M=D|M'
+            ])
         if Enums.Arithmetic[_command] is Enums.Arithmetic.NEG:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('M=-M\n')
-            self.output.write('@SP\n')
-            self.output.write('M=M+1\n')
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'M=-M',
+                '@SP',
+                'M=M+1'
+            ])
         if Enums.Arithmetic[_command] is Enums.Arithmetic.NOT:
-            self.output.write('@SP\n')
-            self.output.write('M=M-1\n')
-            self.output.write('A=M\n')
-            self.output.write('M=!M\n')
-            self.output.write('@SP\n')
-            self.output.write('M=M+1\n')
+            self._writeCodes([
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'M=!M',
+                '@SP',
+                'M=M+1'
+            ])
 
     def writePushPop(self, command, segment, index):
         """C_PUSHまたはC_POPコマンドをアセンブリコードに変換し，それを書き込む
@@ -153,11 +171,13 @@ class CodeWriter:
         if command == Enums.Command.C_PUSH:
             if Enums.MemorySegment[_segment] is \
                     Enums.MemorySegment.CONSTANT:
-                self.output.write('@%s\n' % index)
-                self.output.write('D=A\n')
-                self.output.write('@SP\n')
-                self.output.write('A=M\n')
-                self.output.write('M=D\n')
+                self._writeCodes([
+                    '@%s' % index,
+                    'D=A',
+                    '@SP',
+                    'A=M',
+                    'M=D'
+                ])
             elif Enums.MemorySegment[_segment] in [
                 Enums.MemorySegment.ARGUMENT,
                 Enums.MemorySegment.LOCAL,
@@ -168,53 +188,73 @@ class CodeWriter:
             ]:
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.ARGUMENT:
-                    self.output.write('@ARG\n')
-                    self.output.write('D=M\n')
+                    self._writeCodes([
+                        '@ARG',
+                        'D=M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.LOCAL:
-                    self.output.write('@LCL\n')
-                    self.output.write('D=M\n')
+                    self._writeCodes([
+                        '@LCL',
+                        'D=M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.THIS:
-                    self.output.write('@THIS\n')
-                    self.output.write('A=D+M\n')
+                    self._writeCodes([
+                        '@THIS',
+                        'A=D+M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.THAT:
-                    self.output.write('@THAT\n')
-                    self.output.write('D=M\n')
+                    self._writeCodes([
+                        '@THAT',
+                        'D=M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.POINTER:
-                    self.output.write('@R3\n')
-                    self.output.write('D=A\n')
+                    self._writeCodes([
+                        '@R3',
+                        'D=A'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.TEMP:
-                    self.output.write('@R5\n')
-                    self.output.write('D=A\n')
+                    self._writeCodes([
+                        '@R5',
+                        'D=A'
+                    ])
 
-                self.output.write('@%s\n' % index)
-                self.output.write('A=D+A\n')
-                self.output.write('D=M\n')
-                self.output.write('@SP\n')
-                self.output.write('A=M\n')
-                self.output.write('M=D\n')
+                self._writeCodes([
+                    '@%s' % index,
+                    'A=D+A',
+                    'D=M',
+                    '@SP',
+                    'A=M',
+                    'M=D'
+                ])
             elif Enums.MemorySegment[_segment] is \
                     Enums.MemorySegment.STATIC:
-                self.output.write('@%s.%s\n' % (self.static_var, index))
-                self.output.write('D=M\n')
-                self.output.write('@SP\n')
-                self.output.write('A=M\n')
-                self.output.write('M=D\n')
+                self._writeCodes([
+                    '@%s.%s' % (self.static_var, index),
+                    'D=M',
+                    '@SP',
+                    'A=M',
+                    'M=D'
+                ])
             else:
                 print("Invalid .vm format")
                 sys.exit(1)
 
-            self.output.write('@SP\n')
-            self.output.write('M=M+1\n')
+            self._writeCodes([
+                '@SP',
+                'M=M+1'
+            ])
         if command == Enums.Command.C_POP:
             if Enums.MemorySegment[_segment] is \
                     Enums.MemorySegment.CONSTANT:
-                self.output.write('@SP\n')
-                self.output.write('M=M-1\n')
+                self._writeCodes([
+                    '@SP',
+                    'M=M-1'
+                ])
             elif Enums.MemorySegment[_segment] in [
                 Enums.MemorySegment.ARGUMENT,
                 Enums.MemorySegment.LOCAL,
@@ -225,51 +265,71 @@ class CodeWriter:
             ]:
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.ARGUMENT:
-                    self.output.write('@ARG\n')
-                    self.output.write('D=M\n')
+                    self._writeCodes([
+                        '@ARG',
+                        'D=M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.LOCAL:
-                    self.output.write('@LCL\n')
-                    self.output.write('D=M\n')
+                    self._writeCodes([
+                        '@LCL',
+                        'D=M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.THIS:
-                    self.output.write('@THIS\n')
-                    self.output.write('D=M\n')
+                    self._writeCodes([
+                        '@THIS',
+                        'D=M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.THAT:
-                    self.output.write('@THAT\n')
-                    self.output.write('D=M\n')
+                    self._writeCodes([
+                        '@THAT',
+                        'D=M'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.POINTER:
-                    self.output.write('@R3\n')
-                    self.file.write('D=A\n')
+                    self._writeCodes([
+                        '@R3',
+                        'D=A'
+                    ])
                 if Enums.MemorySegment[_segment] is \
                         Enums.MemorySegment.TEMP:
-                    self.output.write('@R5\n')
-                    self.output.write('D=A\n')
+                    self._writeCodes([
+                        '@R5',
+                        'D=A'
+                    ])
 
-                self.output.write('@%s\n' % index)
-                self.output.write('D=D+A\n')
-                self.output.write('@R13\n')
-                self.output.write('M=D\n')
-                self.output.write('@SP\n')
-                self.output.write('M=M-1\n')
-                self.output.write('A=M\n')
-                self.output.write('D=M\n')
-                self.output.write('@R13\n')
-                self.output.write('A=M\n')
-                self.output.write('M=D\n')
+                self._writeCodes([
+                    '@%s' % index,
+                    'D=D+A',
+                    '@R13',
+                    'M=D',
+                    '@SP',
+                    'M=M-1',
+                    'A=M',
+                    'D=M',
+                    '@R13',
+                    'A=M',
+                    'M=D'
+                ])
             elif Enums.MemorySegment[_segment] is \
                     Enums.MemorySegment.STATIC:
-                self.output.write('@SP\n')
-                self.output.write('M=M-1\n')
-                self.output.write('A=M\n')
-                self.output.write('D=M\n')
-                self.output.write('@%s.%s\n' % (self.static_var, index))
-                self.output.write('M=D\n')
+                self._writeCodes([
+                    '@SP',
+                    'M=M-1',
+                    'A=M',
+                    'D=M',
+                    '@%s.%s' % (self.static_var, index),
+                    'M=D'
+                ])
             else:
                 print("Invalid .vm format")
                 sys.exit(1)
+
+    def _writeCodes(self, codes):
+        for code in codes:
+            self.output.write(code + '\n')
 
     def close(self):
         self.output.close()
