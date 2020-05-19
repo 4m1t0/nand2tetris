@@ -56,19 +56,19 @@ class CodeWriter:
                 'A=A-1',
                 'D=M-D',
                 # jump to EQTRUE# if result is equal(zero)
-                '@EQTRUE%s' % str(self.label_ctr[0]),
+                '@EQTRUE%d' % self.label_ctr[0],
                 'D;JEQ',
                 # result is not equal
                 '@SP',
                 'A=M-1',
                 'M=0',
-                '@EQEND%s' % str(self.label_ctr[0]),
+                '@EQEND%d' % self.label_ctr[0],
                 '0;JMP',
-                '(EQTRUE%s)' % str(self.label_ctr[0]),
+                '(EQTRUE%d)' % self.label_ctr[0],
                 '@SP',
                 'A=M-1',
                 'M=-1',
-                '(EQEND%s)' % str(self.label_ctr[0])
+                '(EQEND%d)' % self.label_ctr[0]
             ])
 
             self.label_ctr[0] += 1
@@ -81,19 +81,19 @@ class CodeWriter:
                 'A=A-1',
                 'D=M-D',
                 # jump to EQTRUE# if result is equal(zero)
-                '@GTTRUE%s' % str(self.label_ctr[1]),
+                '@GTTRUE%d' % self.label_ctr[1],
                 'D;JGT',
                 # result is not equal
                 '@SP',
                 'A=M-1',
                 'M=0',
-                '@GTEND%s' % str(self.label_ctr[1]),
+                '@GTEND%d' % self.label_ctr[1],
                 '0;JMP',
-                '(GTTRUE%s)' % str(self.label_ctr[1]),
+                '(GTTRUE%d)' % self.label_ctr[1],
                 '@SP',
                 'A=M-1',
                 'M=-1',
-                '(GTEND%s)' % str(self.label_ctr[1])
+                '(GTEND%d)' % self.label_ctr[1]
             ])
 
             self.label_ctr[1] += 1
@@ -106,19 +106,19 @@ class CodeWriter:
                 'A=A-1',
                 'D=M-D',
                 # jump to EQTRUE# if result is equal(zero)
-                '@LTTRUE%s' % str(self.label_ctr[2]),
+                '@LTTRUE%d' % self.label_ctr[2],
                 'D;JLT',
                 # result is not equal
                 '@SP',
                 'A=M-1',
                 'M=0',
-                '@LTEND%s' % str(self.label_ctr[2]),
+                '@LTEND%d' % self.label_ctr[2],
                 '0;JMP',
-                '(LTTRUE%s)' % str(self.label_ctr[2]),
+                '(LTTRUE%d)' % self.label_ctr[2],
                 '@SP',
                 'A=M-1',
                 'M=-1',
-                '(LTEND%s)' % str(self.label_ctr[2])
+                '(LTEND%d)' % self.label_ctr[2]
             ])
 
             self.label_ctr[2] += 1
@@ -165,14 +165,14 @@ class CodeWriter:
         Args:
             command (command): C_PUSH or C_POP
             segment (string): メモリセグメント
-            index (int): ?
+            index (int): インデックス
         """
         _segment = segment.upper()
         if command == Enums.Command.C_PUSH:
             if Enums.MemorySegment[_segment] is \
                     Enums.MemorySegment.CONSTANT:
                 self._writeCodes([
-                    '@%s' % index,
+                    '@%d' % index,
                     'D=A',
                     '@SP',
                     'A=M',
@@ -224,7 +224,7 @@ class CodeWriter:
                     ])
 
                 self._writeCodes([
-                    '@%s' % index,
+                    '@%d' % index,
                     'A=D+A',
                     'D=M',
                     '@SP',
@@ -234,7 +234,7 @@ class CodeWriter:
             elif Enums.MemorySegment[_segment] is \
                     Enums.MemorySegment.STATIC:
                 self._writeCodes([
-                    '@%s.%s' % (self.static_var, index),
+                    '@%s.%d' % (self.static_var, index),
                     'D=M',
                     '@SP',
                     'A=M',
@@ -301,7 +301,7 @@ class CodeWriter:
                     ])
 
                 self._writeCodes([
-                    '@%s' % index,
+                    '@%d' % index,
                     'D=D+A',
                     '@R13',
                     'M=D',
@@ -320,7 +320,7 @@ class CodeWriter:
                     'M=M-1',
                     'A=M',
                     'D=M',
-                    '@%s.%s' % (self.static_var, index),
+                    '@%s.%d' % (self.static_var, index),
                     'M=D'
                 ])
             else:

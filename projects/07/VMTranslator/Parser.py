@@ -13,11 +13,9 @@ class Parser:
         """
         _input_file = open(input_file, 'r')
         self.lines = deque(
-            [line.rstrip() if line.find('//') == -1
-                else line[:line.find('//')].rstrip()
+            [line.split("//")[0].rstrip()
              for line in _input_file.readlines()
-             if (not line.startswith('//') and line.rstrip()) or
-             (line.find('//') != -1 and line[:line.find('//')].rstrip())])
+             if line.split("//")[0].rstrip()])
         _input_file.close()
 
         self.current_command = ('', '', '')
