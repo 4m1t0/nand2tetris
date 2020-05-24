@@ -23,12 +23,12 @@ class CompilationEngine:
         self.compileSymbol()
         while self.tokenizer.tokenType() is Enums.Token.KEYWORD \
             and self.tokenizer.keyword() in \
-                (Enums.Keyword.STATIC.value, Enums.Keyword.FIELD.value):
+                (Enums.Keyword.STATIC, Enums.Keyword.FIELD):
             self.compileClassVarDec()
         while self.tokenizer.tokenType() is Enums.Token.KEYWORD \
             and self.tokenizer.keyword() in \
-                (Enums.Keyword.CONSTRUCTOR.value, Enums.Keyword.FUNCTION.value,
-                 Enums.Keyword.METHOD.value):
+                (Enums.Keyword.CONSTRUCTOR, Enums.Keyword.FUNCTION,
+                 Enums.Keyword.METHOD):
             self.compileSubroutine()
         self.compileSymbol()
 
@@ -37,21 +37,23 @@ class CompilationEngine:
     def compileKeyword(self):
         """キーワードをコンパイルする．
         """
-        self._writeElement(TagName.KEYWORD, self.tokenizer.keyword())
+        self._writeElement(TagName.KEYWORD, self.tokenizer.keyword().value)
 
         if self.tokenizer.hasMoreTokens():
             self.tokenizer.advance()
 
     def compileSymbol(self):
-        symbol = self.tokenizer.symbol()
-        if self.tokenizer.symbol() == Enums.Symbol.LESS_THAN_SIGN.value:
+        if self.tokenizer.symbol() is Enums.Symbol.LESS_THAN_SIGN:
             symbol = '&lt;'
-        elif self.tokenizer.symbol() == Enums.Symbol.GREATER_THAN_SIGN.value:
+            self._writeElement(TagName.SYMBOL, symbol)
+        elif self.tokenizer.symbol() is Enums.Symbol.GREATER_THAN_SIGN:
             symbol == '&gt;'
-        elif self.tokenizer.symbol() == Enums.Symbol.AMPERSAND.value:
+            self._writeElement(TagName.SYMBOL, symbol)
+        elif self.tokenizer.symbol() is Enums.Symbol.AMPERSAND:
             symbol == '&amp;'
-
-        self._writeElement(TagName.SYMBOL, symbol)
+            self._writeElement(TagName.SYMBOL, symbol)
+        else:
+            self._writeElement(TagName.SYMBOL, self.tokenizer.symbol().value)
 
         if self.tokenizer.hasMoreTokens():
             self.tokenizer.advance()
@@ -91,15 +93,15 @@ class CompilationEngine:
         self.compileKeyword()
         if self.tokenizer.tokenType() is Enums.Token.KEYWORD \
             and self.tokenizer.keyword() in \
-                (Enums.Keyword.INT.value,
-                 Enums.Keyword.CHAR.value,
-                 Enums.Keyword.BOOLEAN.value):
+                (Enums.Keyword.INT,
+                 Enums.Keyword.CHAR,
+                 Enums.Keyword.BOOLEAN):
             self.compileKeyword()
         else:
             self.compileIdentifier()
         self.compileIdentifier()
         while self.tokenizer.tokenType() is Enums.Token.SYMBOL \
-                and self.tokenizer.symbol() == Enums.Symbol.COMMA.value:
+                and self.tokenizer.symbol() is Enums.Symbol.COMMA:
             self.compileSymbol()
             self.compileIdentifier()
         self.compileSymbol()
@@ -113,14 +115,14 @@ class CompilationEngine:
 
         self.compileKeyword()
         if self.tokenizer.tokenType() is Enums.Token.KEYWORD \
-                and self.tokenizer.keyword() == Enums.Keyword.VOID.value:
+                and self.tokenizer.keyword() is Enums.Keyword.VOID:
             self.compileKeyword()
         else:
             if self.tokenizer.tokenType() is Enums.Token.KEYWORD \
                 and self.tokenizer.keyword() in \
-                    (Enums.Keyword.INT.value,
-                     Enums.Keyword.CHAR.value,
-                     Enums.Keyword.BOOLEAN.value):
+                    (Enums.Keyword.INT,
+                     Enums.Keyword.CHAR,
+                     Enums.Keyword.BOOLEAN):
                 self.compileKeyword()
             else:
                 self.compileIdentifier()
@@ -133,7 +135,7 @@ class CompilationEngine:
 
         self.compileSymbol()
         while self.tokenizer.tokenType() is Enums.Token.KEYWORD \
-                and self.tokenizer.keyword() == Enums.Keyword.VAR.value:
+                and self.tokenizer.keyword() is Enums.Keyword.VAR:
             self.compileVarDec()
         self.compileStatements()
         self.compileSymbol()
@@ -149,26 +151,26 @@ class CompilationEngine:
 
         while self.tokenizer.tokenType() is Enums.Token.KEYWORD \
             and self.tokenizer.keyword() in (
-                Enums.Keyword.INT.value, Enums.Keyword.CHAR.value,
-                Enums.Keyword.BOOLEAN.value):
+                Enums.Keyword.INT, Enums.Keyword.CHAR,
+                Enums.Keyword.BOOLEAN):
             if self.tokenizer.tokenType() is Enums.Token.KEYWORD \
                 and self.tokenizer.keyword() in \
-                    (Enums.Keyword.INT.value,
-                     Enums.Keyword.CHAR.value,
-                     Enums.Keyword.BOOLEAN.value):
+                    (Enums.Keyword.INT,
+                     Enums.Keyword.CHAR,
+                     Enums.Keyword.BOOLEAN):
                 self.compileKeyword()
             else:
                 self.compileIdentifier()
             self.compileIdentifier()
 
             while self.tokenizer.tokenType() is Enums.Token.SYMBOL \
-                    and self.tokenizer.symbol() == Enums.Symbol.COMMA.value:
+                    and self.tokenizer.symbol() is Enums.Symbol.COMMA:
                 self.compileSymbol()
                 if self.tokenizer.tokenType() is Enums.Token.KEYWORD \
                     and self.tokenizer.keyword() in \
-                        (Enums.Keyword.INT.value,
-                         Enums.Keyword.CHAR.value,
-                         Enums.Keyword.BOOLEAN.value):
+                        (Enums.Keyword.INT,
+                         Enums.Keyword.CHAR,
+                         Enums.Keyword.BOOLEAN):
                     self.compileKeyword()
                 else:
                     self.compileIdentifier()
@@ -184,15 +186,15 @@ class CompilationEngine:
         self.compileKeyword()  # var
         if self.tokenizer.tokenType() is Enums.Token.KEYWORD \
             and self.tokenizer.keyword() in \
-                (Enums.Keyword.INT.value,
-                 Enums.Keyword.CHAR.value,
-                 Enums.Keyword.BOOLEAN.value):
+                (Enums.Keyword.INT,
+                 Enums.Keyword.CHAR,
+                 Enums.Keyword.BOOLEAN):
             self.compileKeyword()
         else:
             self.compileIdentifier()
         self.compileIdentifier()
         while self.tokenizer.tokenType() is Enums.Token.SYMBOL \
-                and self.tokenizer.symbol() == Enums.Symbol.COMMA.value:
+                and self.tokenizer.symbol() is Enums.Symbol.COMMA:
             self.compileSymbol()
             self.compileIdentifier()
         self.compileSymbol()
@@ -206,18 +208,18 @@ class CompilationEngine:
 
         while self.tokenizer.tokenType() is Enums.Token.KEYWORD \
             and self.tokenizer.keyword() in \
-                (Enums.Keyword.LET.value, Enums.Keyword.IF.value,
-                 Enums.Keyword.WHILE.value, Enums.Keyword.DO.value,
-                 Enums.Keyword.RETURN.value):
-            if self.tokenizer.keyword() == Enums.Keyword.LET.value:
+                (Enums.Keyword.LET, Enums.Keyword.IF,
+                 Enums.Keyword.WHILE, Enums.Keyword.DO,
+                 Enums.Keyword.RETURN):
+            if self.tokenizer.keyword() is Enums.Keyword.LET:
                 self.compileLet()
-            elif self.tokenizer.keyword() == Enums.Keyword.IF.value:
+            elif self.tokenizer.keyword() is Enums.Keyword.IF:
                 self.compileIf()
-            elif self.tokenizer.keyword() == Enums.Keyword.WHILE.value:
+            elif self.tokenizer.keyword() is Enums.Keyword.WHILE:
                 self.compileWhile()
-            elif self.tokenizer.keyword() == Enums.Keyword.DO.value:
+            elif self.tokenizer.keyword() is Enums.Keyword.DO:
                 self.compileDo()
-            elif self.tokenizer.keyword() == Enums.Keyword.RETURN.value:
+            elif self.tokenizer.keyword() is Enums.Keyword.RETURN:
                 self.compileReturn()
 
         self._writeElementEnd(TagName.STATEMENTS)
@@ -231,7 +233,7 @@ class CompilationEngine:
 
         self.compileIdentifier()
         if self.tokenizer.tokenType() is Enums.Token.SYMBOL \
-                and self.tokenizer.symbol() == Enums.Symbol.PERIOD.value:
+                and self.tokenizer.symbol() is Enums.Symbol.PERIOD:
             self.compileSymbol()  # .
             self.compileIdentifier()
 
@@ -252,7 +254,7 @@ class CompilationEngine:
         self.compileIdentifier()
         while self.tokenizer.tokenType() is not Enums.Token.SYMBOL \
             or (self.tokenizer.tokenType() is Enums.Token.SYMBOL
-                and self.tokenizer.symbol() != Enums.Symbol.EQUAL.value):
+                and self.tokenizer.symbol() is not Enums.Symbol.EQUAL):
             self.compileSymbol()
             self.compileExpression()
             self.compileSymbol()
@@ -285,7 +287,7 @@ class CompilationEngine:
         self.compileKeyword()  # return
         while self.tokenizer.tokenType() is not Enums.Token.SYMBOL \
             or (self.tokenizer.tokenType() is Enums.Token.SYMBOL
-                and self.tokenizer.symbol() != Enums.Symbol.SEMI_COLON.value):
+                and self.tokenizer.symbol() is not Enums.Symbol.SEMI_COLON):
             self.compileExpression()  # 式
         self.compileSymbol()  # ;
 
@@ -305,7 +307,7 @@ class CompilationEngine:
         self.compileSymbol()  # }
 
         if self.tokenizer.tokenType() is Enums.Token.KEYWORD \
-                and self.tokenizer.keyword() == Enums.Keyword.ELSE.value:
+                and self.tokenizer.keyword() is Enums.Keyword.ELSE:
             self.compileKeyword()  # else
             self.compileSymbol()  # {
             self.compileStatements()  # 文
@@ -321,15 +323,15 @@ class CompilationEngine:
         self.compileTerm()
         while self.tokenizer.tokenType() is Enums.Token.SYMBOL \
             and self.tokenizer.symbol() in \
-            (Enums.Symbol.PLUS_SIGN.value,
-             Enums.Symbol.HYPHEN.value,
-             Enums.Symbol.ASTERISK.value,
-             Enums.Symbol.SLASH.value,
-             Enums.Symbol.AMPERSAND.value,
-             Enums.Symbol.VERTICAL_LINE.value,
-             Enums.Symbol.LESS_THAN_SIGN.value,
-             Enums.Symbol.GREATER_THAN_SIGN.value,
-             Enums.Symbol.EQUAL.value):
+            (Enums.Symbol.PLUS_SIGN,
+             Enums.Symbol.HYPHEN,
+             Enums.Symbol.ASTERISK,
+             Enums.Symbol.SLASH,
+             Enums.Symbol.AMPERSAND,
+             Enums.Symbol.VERTICAL_LINE,
+             Enums.Symbol.LESS_THAN_SIGN,
+             Enums.Symbol.GREATER_THAN_SIGN,
+             Enums.Symbol.EQUAL):
             self.compileSymbol()
             self.compileTerm()
 
@@ -353,40 +355,36 @@ class CompilationEngine:
             self.compileStringConstant()
         elif self.tokenizer.tokenType() is Enums.Token.KEYWORD:
             if self.tokenizer.keyword() in \
-                    (Enums.Keyword.TRUE.value, Enums.Keyword.FALSE.value,
-                     Enums.Keyword.NULL.value, Enums.Keyword.THIS.value):
+                    (Enums.Keyword.TRUE, Enums.Keyword.FALSE,
+                     Enums.Keyword.NULL, Enums.Keyword.THIS):
                 self.compileKeyword()
         elif self.tokenizer.tokenType() is Enums.Token.IDENTIFIER:
             self.compileIdentifier()
 
             if self.tokenizer.tokenType() is Enums.Token.SYMBOL and \
-                self.tokenizer.symbol() is \
-                    Enums.Symbol.LEFT_SQUARE_BRACKET.value:
+                    self.tokenizer.symbol() is Enums.Symbol.LEFT_SQUARE_BRACKET:
                 self.compileSymbol()
                 self.compileExpression()
                 self.compileSymbol()
             elif self.tokenizer.tokenType() is Enums.Token.SYMBOL and \
-                self.tokenizer.symbol() is \
-                    Enums.Symbol.LEFT_ROUND_BRACKET.value:
+                    self.tokenizer.symbol() is Enums.Symbol.LEFT_ROUND_BRACKET:
                 self.compileSymbol()
                 self.compileExpressionList()
                 self.compileSymbol()
             elif self.tokenizer.tokenType() is Enums.Token.SYMBOL and \
-                    self.tokenizer.symbol() == Enums.Symbol.PERIOD.value:
+                    self.tokenizer.symbol() is Enums.Symbol.PERIOD:
                 self.compileSymbol()
                 self.compileIdentifier()
                 self.compileSymbol()
                 self.compileExpressionList()
                 self.compileSymbol()
         elif self.tokenizer.tokenType() is Enums.Token.SYMBOL and \
-            self.tokenizer.symbol() == \
-                Enums.Symbol.LEFT_ROUND_BRACKET.value:
+                self.tokenizer.symbol() is Enums.Symbol.LEFT_ROUND_BRACKET:
             self.compileSymbol()
             self.compileExpression()
             self.compileSymbol()
         elif self.tokenizer.tokenType() is Enums.Token.SYMBOL and \
-            self.tokenizer.symbol() in (
-                Enums.Symbol.HYPHEN.value, Enums.Symbol.TILDE.value):
+                self.tokenizer.symbol() in (Enums.Symbol.HYPHEN, Enums.Symbol.TILDE):
             self.compileSymbol()
             self.compileTerm()
 
@@ -399,12 +397,12 @@ class CompilationEngine:
 
         while self.tokenizer.tokenType() is not Enums.Token.SYMBOL \
             or (self.tokenizer.tokenType() is Enums.Token.SYMBOL
-                and self.tokenizer.symbol() != Enums.Symbol.RIGHT_ROUND_BRACKET.value):
+                and self.tokenizer.symbol() is not Enums.Symbol.RIGHT_ROUND_BRACKET):
             self.compileExpression()
 
             while self.tokenizer.tokenType() is not Enums.Token.SYMBOL \
                 or (self.tokenizer.tokenType() is Enums.Token.SYMBOL
-                    and self.tokenizer.symbol() == Enums.Symbol.COMMA.value):
+                    and self.tokenizer.symbol() is Enums.Symbol.COMMA):
                 self.compileSymbol()
                 self.compileExpression()
 

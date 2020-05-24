@@ -142,7 +142,7 @@ class JackTokenizer:
         if self.tokenType() is not Enums.Token.KEYWORD:
             print('Invalid usage at keyword: %s' % self.current_token)
             sys.exit(1)
-        return self.current_token
+        return Enums.Keyword(self.current_token)
 
     def symbol(self):
         """現トークンの文字を返す，このルーチンはtokenType()がSYMBOLの場合のみ呼び出すことができる．
@@ -153,7 +153,7 @@ class JackTokenizer:
         if self.tokenType() is not Enums.Token.SYMBOL:
             print('Invalid usage at symbol: %s' % self.current_token)
             sys.exit(1)
-        return self.current_token
+        return Enums.Symbol(self.current_token)
 
     def identifier(self):
         """現トークンの識別子（identifier）を返す，このルーチンはtokenType()がIDENTIFIERの場合のみ呼び出すことができる．
